@@ -33,9 +33,7 @@ public class OrderWorker implements Runnable{
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-        String order = null;
-        String orderProducts;
+        Order order = new Order();
         StringBuilder stringBuilder = new StringBuilder();
         while(scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -44,11 +42,9 @@ public class OrderWorker implements Runnable{
                 if (line.charAt(i) != ',') {
                     stringBuilder.append(line.charAt(i));
                 }   else {
-                    order = stringBuilder.toString();
-                    orderProducts = line.substring(i + 1);
-                    Integer numProducts = Integer.valueOf(orderProducts);
-                    Database.addOrder(order, numProducts);
-
+                    order.setId(stringBuilder.toString());
+                    order.setNumberOfProducts(Integer.valueOf(line.substring(i + 1)));
+                    Database.addOrder(order);
                     stringBuilder.setLength(0);
                     break;
                 }
