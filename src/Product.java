@@ -1,6 +1,7 @@
 public class Product {
     private String productId;
     private String productOrder;
+    private boolean shipped;
 
     public Product() {
     }
@@ -8,6 +9,7 @@ public class Product {
     public Product(String productId, String productOrder) {
         this.productId = productId;
         this.productOrder = productOrder;
+        this.shipped = false; // By default, a product is not shipped
     }
 
     public String getProductId() {
@@ -24,5 +26,13 @@ public class Product {
 
     public void setProductOrder(String productOrder) {
         this.productOrder = productOrder;
+    }
+
+    public boolean isShipped() {
+        return shipped;
+    }
+
+    public void setShipped(boolean shipped) {
+        this.shipped = shipped;
     }
 }
