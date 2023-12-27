@@ -32,6 +32,6 @@ public class Main {
         }
         ordersExecutorService.shutdown();
         ordersExecutorService.awaitTermination(100, TimeUnit.SECONDS);
-        Database.showOrders();
+        productsExecutorService.shutdown();
     }
 }

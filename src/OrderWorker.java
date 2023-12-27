@@ -43,13 +43,24 @@ public class OrderWorker implements Runnable{
                     order.setId(stringBuilder.toString());
                     order.setNumberOfProducts(Integer.valueOf(line.substring(i + 1)));
                     Database.addOrder(order);
+                    if (order.getNumberOfProducts() != 0) {
+                        Database.activeOrders.add(order.getId());
+                    }
                     stringBuilder.setLength(0);
                     break;
                 }
             }
             for (int i = 0; i < order.getNumberOfProducts(); ++i) {
-                productsExecutorService.submit(new ProductWorker(order));
+                productsExecutorService.submit(new ProductWorker(order, i + 1));
             }
         }
+    }
+
+    public static synchronized void shippedProductNotification(String orderId) {
+        Database.orders.replace(orderId, Database.orders.get(orderId) - 1);
+        if (Database.orders.get(orderId).equals(0)) {
+            System.out.println(orderId + " shipped");
+            Database.activeOrders.remove(orderId);
+        }   else System.out.println(orderId + " shipped");
     }
 }

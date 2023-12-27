@@ -1,25 +1,22 @@
 import javax.xml.crypto.Data;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class ProductWorker implements Runnable{
     private Order order;
+    private Integer productNumber;
 
 
     public ProductWorker(){
     }
 
-    public ProductWorker(Order order) {
+    public ProductWorker(Order order, Integer productNumber) {
         this.order = order;
+        this.productNumber = productNumber;
     }
 
-//    synchronized boolean checkIfWorked(Product product) {
-//        if(Database.products.)
-//    }
 
     @Override
     public void run() {
@@ -29,8 +26,9 @@ public class ProductWorker implements Runnable{
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        Order order = new Order();
+
         StringBuilder stringBuilder = new StringBuilder();
+        Integer number = 0;
         while(scanner.hasNextLine()) {
             String line = scanner.nextLine();
             String orderId = "";
@@ -40,15 +38,15 @@ public class ProductWorker implements Runnable{
                     stringBuilder.append(line.charAt(i));
                 }   else {
                     orderId = String.valueOf(stringBuilder);
-                    productId = String.valueOf(line.substring(i+1));
-
-                    Product product = new Product(orderId, productId);
-                    if (Objects.equals(orderId, order.getId())) {
-                        if (!Database.workedProducts.contains(product)) {
-                            Database.addWorkedProduct(product);
+                    productId = line.substring(i + 1);
+                    if (orderId.equals(this.order.getId())) {
+                        number++;
+                    }
+                    if (number.equals(this.productNumber)) {
+                        if (Database.activeOrders.contains(orderId)) {
+                            OrderWorker.shippedProductNotification(orderId);
                         }
                     }
-                    Database.addProduct(product);
                     stringBuilder.setLength(0);
                     break;
                 }
