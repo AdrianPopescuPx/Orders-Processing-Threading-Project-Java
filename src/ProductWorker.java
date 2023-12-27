@@ -1,6 +1,7 @@
 import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -44,7 +45,12 @@ public class ProductWorker implements Runnable{
                     }
                     if (number.equals(this.productNumber)) {
                         if (Database.activeOrders.contains(orderId)) {
-                            OrderWorker.shippedProductNotification(orderId);
+                            try {
+                                OrderWorker.shippedProductNotification(orderId);
+                                Database.writeProductToFile(productId, orderId);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
                     stringBuilder.setLength(0);

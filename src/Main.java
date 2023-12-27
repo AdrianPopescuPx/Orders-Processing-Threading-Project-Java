@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,7 @@ public class Main {
         // get number of lines to give the work fair for all the workers
         long numLines = Files.lines(Path.of(inputLocation)).count();
         int ordersPerWorker = (int) (numLines / threadsNumber);
+
 
         // thread pools for orders workers and for products workers
         ExecutorService ordersExecutorService = Executors.newFixedThreadPool(threadsNumber);

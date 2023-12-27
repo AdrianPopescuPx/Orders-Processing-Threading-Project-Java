@@ -1,8 +1,5 @@
 import javax.xml.crypto.Data;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -43,6 +40,7 @@ public class OrderWorker implements Runnable{
                     order.setId(stringBuilder.toString());
                     order.setNumberOfProducts(Integer.valueOf(line.substring(i + 1)));
                     Database.addOrder(order);
+                    Database.ordersData.put(order.getId(), order.getNumberOfProducts());
                     if (order.getNumberOfProducts() != 0) {
                         Database.activeOrders.add(order.getId());
                     }
@@ -56,11 +54,11 @@ public class OrderWorker implements Runnable{
         }
     }
 
-    public static synchronized void shippedProductNotification(String orderId) {
+    public static synchronized void shippedProductNotification(String orderId) throws IOException {
         Database.orders.replace(orderId, Database.orders.get(orderId) - 1);
         if (Database.orders.get(orderId).equals(0)) {
-            System.out.println(orderId + " shipped");
+            Database.writeOrderToFile(orderId);
             Database.activeOrders.remove(orderId);
-        }   else System.out.println(orderId + " shipped");
+        }
     }
 }
